@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Settings from './src/pages/Settings';
 import Orders from './src/pages/Orders';
 import Delivery from './src/pages/Delivery';
 import SignIn from './src/pages/SignIn';
 import SignUp from './src/pages/SignUp';
+import useSocket from './src/hooks/useSocket';
 import {NavigationContainer} from '@react-navigation/native';
 import {RootState} from './src/store/reducer';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -20,13 +21,34 @@ export type RootStackParamList = {
   SignIn: undefined;
   SignUp: undefined;
 };
-
-type Props = {};
-
-function AppInner({}: Props) {
+const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
+function AppInner() {
   const isLoggedIn = useSelector((state: RootState) => !!state.user.email);
-  const Tab = createBottomTabNavigator();
-  const Stack = createNativeStackNavigator();
+  const [socket, disconnect] = useSocket();
+
+  useEffect(() => {
+    const callback = (data: any) => {
+      console.log(data);
+    };
+    if (socket && isLoggedIn) {
+      console.log(socket);
+      socket.emit('acceptOrder', 'hello');
+      socket.on('oreder', callback);
+    }
+    return () => {
+      if (socket) {
+        socket.off('order', callback);
+      }
+    };
+  }, [isLoggedIn, socket]);
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      console.log('!isLoggedIn', !isLoggedIn);
+      disconnect();
+    }
+  }, [isLoggedIn, disconnect]);
   return (
     <NavigationContainer>
       {isLoggedIn ? (
