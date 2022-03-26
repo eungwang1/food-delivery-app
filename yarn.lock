@@ -6212,6 +6212,16 @@
     "jscodeshift" "^0.11.0"
     "nullthrows" "^1.1.1"
 
+"react-native-config@^1.4.5":
+  "integrity" "sha512-5oiAsoW88SOYDg/0cleJ2vJDqv98FJUbFQYEnH4sdMtEn3AAT3lb7BkTGW8HO/t3Vk9VOruwxUUnO4tzuxzCsw=="
+  "resolved" "https://registry.npmjs.org/react-native-config/-/react-native-config-1.4.5.tgz"
+  "version" "1.4.5"
+
+"react-native-encrypted-storage@^4.0.2":
+  "integrity" "sha512-vneDkHGDuTvLQjUBztqb2YI8QoH1zxdJonPGTS+g57lfJZff9fAjoLSSb6NgMBebpXFcK3I3sEresGyL+3AArw=="
+  "resolved" "https://registry.npmjs.org/react-native-encrypted-storage/-/react-native-encrypted-storage-4.0.2.tgz"
+  "version" "4.0.2"
+
 "react-native-flipper@^0.140.0", "react-native-flipper@^0.37.0", "react-native-flipper@>=0.100.0":
   "integrity" "sha512-dsDMEU0+NPOYq5U30xTwvdCUQC9yJ6ADu61W260er4ROggrwJyFJlRQ36rBdcys0A/p8I2LI82teyhiO9RNoFQ=="
   "resolved" "https://registry.npmjs.org/react-native-flipper/-/react-native-flipper-0.140.0.tgz"

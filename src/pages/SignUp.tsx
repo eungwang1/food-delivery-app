@@ -13,6 +13,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../AppInner';
 import DismissKeyboardView from '../components/DismissKeyboardView';
 import axios, {AxiosError} from 'axios';
+import Config from 'react-native-config';
 
 type SignUpScreenProps = NativeStackScreenProps<RootStackParamList, 'SignUp'>;
 
@@ -34,29 +35,11 @@ function SignUp({navigation}: SignUpScreenProps) {
   const onChangePassword = useCallback(text => {
     setPassword(text.trim());
   }, []);
-  const onSubmit = useCallback(() => {
+  const onSubmit = useCallback(async () => {
     if (loading) {
       return;
     }
-    const requestSignUp = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.post('localhost:3105/user', {
-          email,
-          name,
-          password,
-        });
-        console.log(response);
-      } catch (error) {
-        const errorResponse = (error as AxiosError).response;
-        console.error(errorResponse);
-        if (errorResponse) {
-          Alert.alert('알림', errorResponse.data.message);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
+
     if (!email || !email.trim()) {
       return Alert.alert('알림', '이메일을 입력해주세요.');
     }
@@ -80,10 +63,25 @@ function SignUp({navigation}: SignUpScreenProps) {
       );
     }
     console.log(email, name, password);
-    requestSignUp();
-
-    Alert.alert('알림', '회원가입 되었습니다.');
-  }, [email, name, password, loading]);
+    try {
+      setLoading(true);
+      const response = await axios.post(`${Config.API_URL}/user`, {
+        email,
+        name,
+        password,
+      });
+      console.log(response);
+    } catch (error) {
+      const errorResponse = (error as AxiosError).response;
+      console.error(errorResponse);
+      if (errorResponse) {
+        Alert.alert('알림', errorResponse.data.message);
+      }
+    } finally {
+      setLoading(false);
+    }
+    navigation.navigate('SignIn');
+  }, [email, name, password, loading, navigation]);
 
   const canGoNext = email && name && password;
   return (
