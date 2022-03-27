@@ -1,3 +1,5 @@
+// 위도경도 받아서 계산해주는함수
+
 function getDistanceFromLatLonInKm(
   lat1: number,
   lon1: number,

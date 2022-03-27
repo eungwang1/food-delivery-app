@@ -35,8 +35,6 @@ const Stack = createNativeStackNavigator();
 function AppInner() {
   const dispatch = useAppDispatch();
   const isLoggedIn = useSelector((state: RootState) => !!state.user.email);
-  console.log('isLoggedIn', isLoggedIn);
-
   const [socket, disconnect] = useSocket();
 
   // 앱 실행 시 토큰 있으면 로그인하는 코드
@@ -95,7 +93,6 @@ function AppInner() {
       disconnect();
     }
   }, [isLoggedIn, disconnect]);
-
   useEffect(() => {
     axios.interceptors.response.use(
       response => {
