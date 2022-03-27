@@ -1,12 +1,23 @@
-import React from 'react';
-import {Text, View} from 'react-native';
+import React, {useCallback} from 'react';
+import {FlatList, View} from 'react-native';
+import {Order} from '../slices/order';
+import {useSelector} from 'react-redux';
+import {RootState} from '../store/reducer';
+import EachOrder from '../components/EachOrder';
 
-type Props = {};
+function Orders() {
+  const orders = useSelector((state: RootState) => state.order.orders);
+  const renderItem = useCallback(({item}: {item: Order}) => {
+    return <EachOrder item={item} />;
+  }, []);
 
-function Orders({}: Props) {
   return (
     <View>
-      <Text>Orders</Text>
+      <FlatList
+        data={orders}
+        keyExtractor={item => item.orderId}
+        renderItem={renderItem}
+      />
     </View>
   );
 }

@@ -16,7 +16,7 @@ import Config from 'react-native-config';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {Alert} from 'react-native';
 import {useAppDispatch} from './src/store';
-import orderSlice from './src/slices/oreder';
+import orderSlice from './src/slices/order';
 export type LoggedInParamList = {
   Orders: undefined;
   Settings: undefined;

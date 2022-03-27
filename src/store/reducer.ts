@@ -1,5 +1,5 @@
 import {combineReducers} from 'redux';
-import orderSlice from '../slices/oreder';
+import orderSlice from '../slices/order';
 
 import userSlice from '../slices/user';
 
