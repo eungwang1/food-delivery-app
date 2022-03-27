@@ -23,7 +23,6 @@ import {useSelector} from 'react-redux';
 import {RootState} from '../store/reducer';
 import orderSlice from '../slices/order';
 import {useAppDispatch} from '../store';
-
 function Complete() {
   const dispatch = useAppDispatch();
   const route = useRoute<RouteProp<LoggedInParamList>>();

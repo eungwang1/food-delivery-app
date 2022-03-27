@@ -1,29 +1,34 @@
-import React, {useEffect} from 'react';
-import Settings from './src/pages/Settings';
-import Orders from './src/pages/Orders';
-import Delivery from './src/pages/Delivery';
 import SignIn from './src/pages/SignIn';
 import SignUp from './src/pages/SignUp';
-import useSocket from './src/hooks/useSocket';
-import {NavigationContainer} from '@react-navigation/native';
-import {RootState} from './src/store/reducer';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import Orders from './src/pages/Orders';
+import Delivery from './src/pages/Delivery';
+import Settings from './src/pages/Settings';
+import * as React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useSelector} from 'react-redux';
-import axios, {AxiosError} from 'axios';
-import userSlice from './src/slices/user';
-import Config from 'react-native-config';
+import {RootState} from './src/store/reducer';
+import useSocket from './src/hooks/useSocket';
+import {useEffect} from 'react';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import axios, {AxiosError} from 'axios';
 import {Alert} from 'react-native';
+import userSlice from './src/slices/user';
 import {useAppDispatch} from './src/store';
+import Config from 'react-native-config';
 import orderSlice from './src/slices/order';
+import usePermissions from './src/hooks/usePermissions';
+import SplashScreen from 'react-native-splash-screen';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {NavigationContainer} from '@react-navigation/native';
+
 export type LoggedInParamList = {
   Orders: undefined;
   Settings: undefined;
   Delivery: undefined;
   Complete: {orderId: string};
 };
-
 export type RootStackParamList = {
   SignIn: undefined;
   SignUp: undefined;
@@ -35,7 +40,10 @@ const Stack = createNativeStackNavigator();
 function AppInner() {
   const dispatch = useAppDispatch();
   const isLoggedIn = useSelector((state: RootState) => !!state.user.email);
+
   const [socket, disconnect] = useSocket();
+
+  usePermissions();
 
   // 앱 실행 시 토큰 있으면 로그인하는 코드
   useEffect(() => {
@@ -43,6 +51,7 @@ function AppInner() {
       try {
         const token = await EncryptedStorage.getItem('refreshToken');
         if (!token) {
+          SplashScreen.hide();
           return;
         }
         const response = await axios.post(
@@ -66,6 +75,8 @@ function AppInner() {
         if ((error as AxiosError).response?.data.code === 'expired') {
           Alert.alert('알림', '다시 로그인 해주세요.');
         }
+      } finally {
+        SplashScreen.hide();
       }
     };
     getTokenAndRefresh();
@@ -93,6 +104,7 @@ function AppInner() {
       disconnect();
     }
   }, [isLoggedIn, disconnect]);
+
   useEffect(() => {
     axios.interceptors.response.use(
       response => {
@@ -124,6 +136,7 @@ function AppInner() {
       },
     );
   }, [dispatch]);
+
   return (
     <NavigationContainer>
       {isLoggedIn ? (
@@ -131,17 +144,28 @@ function AppInner() {
           <Tab.Screen
             name="Orders"
             component={Orders}
-            options={{title: '오더 목록'}}
+            options={{
+              title: '오더 목록',
+              tabBarIcon: () => <FontAwesome5 name="list" size={20} />,
+            }}
           />
           <Tab.Screen
             name="Delivery"
             component={Delivery}
-            options={{headerShown: false}}
+            options={{
+              headerShown: false,
+              title: '지도',
+              tabBarIcon: () => <FontAwesome5 name="map" size={20} />,
+            }}
           />
           <Tab.Screen
             name="Settings"
             component={Settings}
-            options={{title: '내 정보'}}
+            options={{
+              title: '내 정보',
+              tabBarIcon: () => <FontAwesome name="gear" size={20} />,
+              unmountOnBlur: true,
+            }}
           />
         </Tab.Navigator>
       ) : (
